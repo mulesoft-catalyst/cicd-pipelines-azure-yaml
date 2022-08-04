@@ -1,0 +1,49 @@
+schedules:
+- cron: "0 0 * * *"
+  displayName: Daily midnight build
+  branches:
+    include:
+    - main
+    - releases/*
+    exclude:
+    - releases/ancient/*
+- cron: "0 12 * * 0"
+  displayName: Weekly Sunday build
+  branches:
+    include:
+    - releases/*
+  always: true
+
+pool:
+  vmImage: ubuntu-latest
+
+pool:
+    name: Azure Pipelines
+    demands: maven
+  
+  steps:
+  - task: DownloadSecureFile@1
+    displayName: 'secure file settings'
+    inputs:
+      secureFile: settings.xml
+  
+  - task: Maven@3
+    displayName: test
+    inputs:
+      mavenPomFile: '$(Parameters.mavenPOMFile)'
+      goals: 'clean test'
+      options: '-s $(Agent.TempDirectory)/settings.xml'
+  
+  - task: Maven@3
+    displayName: package
+    inputs:
+      goals: 'clean package -DskipTests'
+      options: '-s $(Agent.TempDirectory)/settings.xml'
+      publishJUnitResults: false
+  
+  - task: Maven@3
+    displayName: 'Deploy dev'
+    inputs:
+      goals: '-U -V -e -B -DskipTests deploy -DmuleDeploy'
+      options: '-s $(Agent.TempDirectory)/settings.xml -Danypoint.userName=$(anypoint.userName) -Danypoint.password=$(anypoint.password) -Dcloudhub.environment=$(cloudhub.environment) -Dcloudhub.api_int_exposure=$(cloudhub.api_int_exposure) -Dcloudhub.api_ext_exposure=$(cloudhub.api_ext_exposure) -Dcloudhub.workerType=$(cloudhub.workerType) -Dcloudhub.workers=$(cloudhub.workers) -Dcloudhub.region=$(cloudhub.region) -Dmule.encryption.key=$(mule.encryption.key) -Dmif.host=$(mif.host) -Dhttp.private.port=8091'
+    timeoutInMinutes: 20
