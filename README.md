@@ -4,18 +4,14 @@ There are mainly two branches. Aug/1/2021 :
 1. main
 2. develop
 
-two entry points for github actions for each branches and build_deploy_reusable.yml is re-usable workflow file:
+two entry points for each branches. [ it's better to have two pipeline yaml file for each env rather than combining into one monolithic]
+- azure-dev-build-pipeline.yml
+- azure-release-build-pipeline.yml
 
-.github/workflows/ci_cd_pipeline_development.yml@develop
-  This is PR triggered for develop branch
-
-.github/workflows/ci_cd_pipeline_release_stage_prod.yml@main
-  This is manually triggered. asks user input in which environment you want to push the release.
-
-# Environment and Secrets Setup
+# Azure Environment and Secrets Setup
 ## Environment
-There are few environment created [ this is optional for private repo as environment is not supported in private repo ]:
-1. dev
+There are few environment created 
+1. dev-01
 2. qa
 3. staging
 4. prod
@@ -26,18 +22,18 @@ Environment specific variables:
 
 # How to Trigger pipeline
 1. Fork this repo 
-2. configure your fork and setup your environment and secrets mentioned above
-3. Trigger pipeline either manually, by PR or cronjob schdeduled
+2. configure your fork and setup azure devops environment and secrets mentioned above
+3. Trigger pipeline either manually or github events - PR
 
 # Features
 ## Mule Application
 1. Mule Application compile, build, test, package [Aug/2021]
 2. Mule Application release prepare and perform [Aug/2021]
 3. CloudHub Deployment using username/password [Aug/2021]
-## GitHub Actions
-Most of the advanced features are used in this pipeline workflows
+4. Azure devops using yaml file instead of classic UI
 
 # Future Items
-## Automated API promotion using GitHub Actions
+## Automated API promotion
 ## Flex CD Deployment
-## Etc..
+## RTF/On-Preme deployment example 
+## etc..
