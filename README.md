@@ -33,7 +33,4 @@ Environment specific variables:
 4. Azure devops using yaml file instead of classic UI
 
 # Future Items
-## Automated API promotion
-## Flex CD Deployment
-## RTF/On-Preme deployment example 
-## etc..
+
