@@ -1,0 +1,60 @@
+pool:
+  name: Azure Pipelines
+  demands: maven
+
+steps:
+- task: DownloadSecureFile@1
+  displayName: 'Download secure file'
+  inputs:
+    secureFile: settings.xml
+
+steps:
+- task: DownloadSecureFile@1
+  displayName: 'Download secure file'
+  inputs:
+    secureFile: '33f88ca4-ff31-4769-b644-ed5d6d34fbdb'
+
+- task: Maven@3
+  displayName: test
+  inputs:
+    goals: 'clean test'
+    options: '-s $(Agent.TempDirectory)/settings.xml'
+
+- task: Maven@3
+  displayName: package
+  inputs:
+    goals: 'clean package -DskipTests'
+    options: '-s $(Agent.TempDirectory)/settings.xml'
+
+- bash: |
+   # Write your commands here
+   
+   git config --global user.email "deveipapideployer@homehardware.ca"
+   git config --global user.name "deveipapideployer"
+   git checkout develop
+   
+  displayName: 'Set GIT identity'
+
+- task: Maven@3
+  displayName: 'Release Prepare'
+  inputs:
+    goals: 'release:prepare --batch-mode'
+    options: '-s $(Agent.TempDirectory)/settings.xml -Dmaven.test.skip=true -DskipTests -Dazure.git.user=$(azure.git.user) -Dazure.git.password=$(azure.git.password)'
+    publishJUnitResults: false
+
+- task: Maven@3
+  displayName: 'Release Perform'
+  inputs:
+    goals: 'release:perform'
+    options: '-s $(Agent.TempDirectory)/settings.xml -Dmaven.test.skip=true -DskipTests'
+    publishJUnitResults: false
+
+- task: CopyFiles@2
+  displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
+  inputs:
+    SourceFolder: '$(Build.SourcesDirectory)'
+    Contents: '**/*'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: drop'
