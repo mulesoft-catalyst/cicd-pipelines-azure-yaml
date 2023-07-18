@@ -50,13 +50,13 @@ steps:
   inputs:
     mavenPomFile: '$(system.defaultWorkingDirectory)/pom.xml'  
     goals: '-U -V -e -B -DskipTests deploy -DmuleDeploy'
-    options: '-s $(Agent.TempDirectory)/settings.xml -Danypoint.userName=$(anypoint.userName) -Danypoint.password=$(anypoint.password) -Dcloudhub.environment=$(cloudhub.environment) -Dcloudhub.api_int_exposure=$(cloudhub.api_int_exposure) -Dcloudhub.api_ext_exposure=$(cloudhub.api_ext_exposure) -Dcloudhub.workerType=$(cloudhub.workerType) -Dcloudhub.workers=$(cloudhub.workers) -Dcloudhub.region=$(cloudhub.region) -Dmule.encryption.key=$(mule.encryption.key) -Dmif.host=$(mif.host) -Dhttp.private.port=8091'
+    options: '-s $(Agent.TempDirectory)/settings.xml -Danypoint.userName=$(anypoint.userName) -Danypoint.password=$(anypoint.password) -Dcloudhub.environment=$(cloudhub.environment) -Dcloudhub.api_int_exposure=$(cloudhub.api_int_exposure) -Dcloudhub.api_ext_exposure=$(cloudhub.api_ext_exposure) -Dcloudhub.workerType=$(cloudhub.workerType) -Dcloudhub.workers=$(cloudhub.workers) -Dcloudhub.region=$(cloudhub.region) -Dmule.encryption.key=$(mule.encryption.key) -Dmif.host=$(m-name.host) -Dhttp.private.port=8091'
   timeoutInMinutes: 20
 
 - bash: |
    # Write your commands here
    
-   git config --global user.email "deveipapideployer@homehardware.ca"
+   git config --global user.email "deveipapideployer"
    git config --global user.name "deveipapideployer"
    git checkout develop
    
